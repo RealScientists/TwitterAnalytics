@@ -156,7 +156,7 @@ function twitter_get($endpoint, $args) {
  * @return string timestamp in format YYYYMMDD-HHmm.
  */
 function tstamp() {
-  return(date("omd-hi"));
+  return(date("omd-Hi"));
 }
 
 ?>
