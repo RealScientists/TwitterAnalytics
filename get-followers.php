@@ -1,6 +1,14 @@
 #!/usr/bin/env php
 <?php
 
+/*
+ * This script will get full details of all followers for a given
+ * screen name and write to a JSON file.
+ *
+ * See extract-followers-stats.php for a tool that can process
+ * the JSON into CSV ready for graphing or other reporting.
+ */
+
 date_default_timezone_set('UTC');
 
 
