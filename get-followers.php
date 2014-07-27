@@ -11,7 +11,6 @@
 
 date_default_timezone_set('UTC');
 
-
 if (!isset($argv[1])) {
   echo "Usage: get-followers.php SCREENNAME\n";
   exit;
@@ -97,11 +96,37 @@ function get_loop($endpoint, $args, $key_field, $progress = false) {
       echo "Getting batch " . $count . " from " . $endpoint . "\n";
     }
 
-    $ret = twitter_get($endpoint, $args);
 
-    if ( $ret['status'] === false ) {
-      echo $ret['errmsg'];
-      exit;
+    $ret = null;
+
+    /**
+     * Make up to $max_retries attempts to do the API call.
+     *
+     * @var integer number of attempts after the initial one that have been made on this call.
+     * @var integer max_retries number of times after first attempt to try making this call.
+     */
+    $retries = 0;
+    $max_retries = 5;
+    while (true) {
+      $ret = twitter_get($endpoint, $args);
+
+      /* If we got the data, leave the loop. */
+      if ( $ret['status'] === true ) {
+        break;
+      }
+
+      if ($progress) {
+        echo "Unsuccessful API call on attempt " . $retries . ". " . $ret['errmsg'];
+      }
+
+      $retries++;
+
+      if ($retries > $max_retries) {
+        echo "Giving up.\n";
+        exit;
+      }
+
+      sleep(120);
     }
 
     $tmpdata = $data;
