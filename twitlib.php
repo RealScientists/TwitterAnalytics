@@ -133,4 +133,14 @@ function tstamp() {
   return(date("omd-Hi"));
 }
 
+/**
+ * Convert Twitter date string to ISO8601
+ * 
+ * @param string Twitter timestamp
+ * @return string ISO8601 timestamp
+ */
+function twittime2iso($t) {
+  return(date('Y-m-d H:i:s', strtotime(preg_replace('/\s\+0000/', '', $t))));
+}
+
 ?>

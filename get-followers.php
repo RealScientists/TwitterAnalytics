@@ -11,7 +11,11 @@
  * NOTE - this doesn't work with accounts with large numbers of 
  * followers, due to memory issues. Such accounts will probably 
  * need to be written to a database table, batch by batch.
+ * 
+ * Uncommenting the line below *may* solve the problem, but it may
+ * also crash the computer.
  */
+//ini_set('memory_limit', '-1'); // Uncomment at your peril!
 
 if (!isset($argv[1])) {
   echo "Usage: get-followers.php SCREENNAME\n";

@@ -1,6 +1,18 @@
 #!/usr/bin/env php
 <?php
 
+
+/* Include common functions/objects. */
+require_once(__DIR__.'/twitlib.php');
+
+/*
+ * Processor the JSON output of get-followers.php.
+ *
+ * Creates a summary CSV file of all followers with their
+ * basic stats, and also a set of CSV files for the frequencies
+ * of those stats defined in $fields_of_interest.
+ */
+
 /* Check filename specified. */
 if ( !isset($argv[1]) ) {
   echo "Usage: extract-followers-stats.php FILENAME\n";
@@ -25,15 +37,20 @@ if ( $jdata === null ) {
   exit;
 }
 
-/* Get frequencies for the values of these fields. */
+/* 
+ * Get frequencies for the values of these fields. 
+ *
+ * See definition of user object here: https://dev.twitter.com/docs/platform-objects/users
+ */
 $fields_of_interest = array( 'followers_count', 'friends_count', 'favourites_count', 'listed_count', 'statuses_count' );
+
 
 /* 
  * Create frequencies array, and start
  * a CSV file with headings.
  */
 $frequencies = array();
-$sscsv = 'screen_name,name,id,';
+$sscsv = 'screen_name,name,id,created_at,';
 foreach ( $fields_of_interest as $field ) {
   $frequencies[$field] = array();
   $sscsv .= $field . ',';
@@ -53,6 +70,7 @@ foreach ( $jdata as $user ) {
   $csvrow = '"' . $user['screen_name'] . '",';
   $csvrow .= '"' . $user['name'] . '",';
   $csvrow .= '"' . $user['id_str'] . '",';
+  $csvrow .= '"' . twittime2iso($user['created_at']) . '",';
 
   /* Populate the frequencies arrays. */
   foreach( $fields_of_interest as $field ) {
