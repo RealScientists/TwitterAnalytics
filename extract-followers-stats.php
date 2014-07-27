@@ -1,6 +1,11 @@
 #!/usr/bin/env php
 <?php
-
+/* 
+ * Uncomment to work on large datasets if 
+ * a) you get PHP Fatal error: allowed memory size... warning and
+ * b) you think your machine has adequate RAM.
+ */
+//ini_set('memory_limit', '-1');
 
 /* Include common functions/objects. */
 require_once(__DIR__.'/twitlib.php');

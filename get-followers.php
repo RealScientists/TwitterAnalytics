@@ -1,5 +1,11 @@
 #!/usr/bin/env php
 <?php
+/* 
+ * Uncomment to work on large datasets if 
+ * a) you get PHP Fatal error: allowed memory size... warning and
+ * b) you think your machine has adequate RAM.
+ */
+//ini_set('memory_limit', '-1');
 
 /*
  * This script will get full details of all followers for a given
@@ -7,15 +13,7 @@
  *
  * See extract-followers-stats.php for a tool that can process
  * the JSON into CSV ready for graphing or other reporting.
- * 
- * NOTE - this doesn't work with accounts with large numbers of 
- * followers, due to memory issues. Such accounts will probably 
- * need to be written to a database table, batch by batch.
- * 
- * Uncommenting the line below *may* solve the problem, but it may
- * also crash the computer.
  */
-//ini_set('memory_limit', '-1'); // Uncomment at your peril!
 
 if (!isset($argv[1])) {
   echo "Usage: get-followers.php SCREENNAME\n";
