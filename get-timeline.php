@@ -12,6 +12,14 @@ if ($argc != 5) {
   exit;
 }
 
+/**
+ * @var unsigned integer $maxcount maximum number of tweets to request per call. Maximum permissible 200, but gets lots of API timeouts.
+ * @var unsigned integer $max_retries maximum number of times to retry API call, in the event of failure.
+ */
+$maxcount = 50;
+$max_retries = 5;
+
+
 $screen_name = $argv[1];
 $curator = $argv[2];
 $from = $argv[3];
@@ -21,9 +29,6 @@ $fname = $screen_name . '-' . $curator . '-tweets.json';
 
 $data = array();
 $tmpto = $to;
-$maxcount = 50;
-$max_retries = 5;
-$progress = true;
 $tweetcount = 0;
 
 while(true) {
@@ -40,9 +45,7 @@ while(true) {
         break;
     }
 
-    if ($progress) {
-      echo "Unsuccessful API call on attempt " . $retries . ". " . $ret['errmsg'];
-    }
+    echo "Unsuccessful API call on attempt " . $retries . ". " . $ret['errmsg'];
 
     $retries++;
 
