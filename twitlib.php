@@ -29,6 +29,77 @@ $client->set_oauth (
   $config['access_token_secret'] 
 );
 
+
+/**
+ * Retrieve timeline from between given from/to tweet IDs.
+ *
+ * @param string screen name of user
+ * @param integer $from oldest tweet ID.
+ * @param integer $to newest tweet ID.
+ * @param boolean $progress show progress through echo to STDOUT.
+ * @param unsigned integer maximum API call retries after initial attempt.
+ * @return array concatenated dataset from multiple API calls.
+ */
+function get_timeline($screen_name, $from, $to, $progress = false, $max_retries = 5) {
+
+  $count = 0;
+  
+  $args['cursor'] = -1;
+
+  $data = array();
+
+  while (true) {
+    $count++;
+
+    if ($progress) {
+      echo "Getting batch " . $count . " from " . $endpoint . "\n";
+    }
+
+
+    $ret = null;
+
+    /**
+     * Make up to $max_retries attempts to do the API call.
+     *
+     * @var integer max_retries number of times after first attempt to try making this call.
+     */
+    $retries = 0;
+    while (true) {
+      $ret = twitter_get($endpoint, $args);
+
+      /* If we got the data, leave the loop. */
+      if ( $ret['status'] === true ) {
+        break;
+      }
+
+      if ($progress) {
+        echo "Unsuccessful API call on attempt " . $retries . ". " . $ret['errmsg'];
+      }
+
+      $retries++;
+
+      if ($retries > $max_retries) {
+        echo "Giving up.\n";
+        exit;
+      }
+
+      sleep(120);
+    }
+
+    $tmpdata = $data;
+    $data = array_merge($tmpdata, $ret['data'][$key_field]);
+
+    if ( $ret['data']['next_cursor'] == 0 ) {
+      break;
+    }
+
+    $args['cursor'] = $ret['data']['next_cursor'];
+    sleep(60);
+  }
+
+  return($data);
+}
+
 /**
  * Loop calling twitter_get() to handle paged responses.
  * 
