@@ -3,10 +3,12 @@
 
 require_once(__DIR__.'/twitlib.php');
 
+/** @var boolean $verbose run in verbose mode. */
+$verbose = true;
+
+
 /** @var string path for storing files. */
 $datadir = __DIR__.'/data/';
-
-$screen_names = array( 'astrotweeps', 'biotweeps' );
 
 /**
  * @global string UTC timestamp YYYYMMDD-HHmm
@@ -15,6 +17,10 @@ $screen_names = array( 'astrotweeps', 'biotweeps' );
  * allowing datasets for multiple accounts to be compared.
  */
 $batch_id = tstamp();
+
+
+/* Pull in $screen_names from watchlist. */
+require_once(__DIR__.'/watchlist.php');
 
 /**
  * Loop to generate and index datasets for given screennames.
@@ -30,13 +36,13 @@ foreach ($screen_names as $screen_name) {
  * @param array list of screen names.
  */
 function get_ids($screen_name) {
-  global $batch_id, $datadir;
+  global $batch_id, $datadir, $verbose;
 
   $fname = $datadir . $screen_name . '-followers_ids-' . tstamp() . '.json';
   $dsname = $datadir . $screen_name . '-followers_ids-datasets.csv';
 
   /* Retrieve follower ids, write to file. */
-  $t = get_loop('followers/ids', array('screen_name' => $screen_name), 'ids', false, 5);
+  $t = get_loop('followers/ids', array('screen_name' => $screen_name), 'ids', $verbose, 5);
   file_put_contents($fname, json_encode($t));
 
   /* Get data for current user to append to CSV */
