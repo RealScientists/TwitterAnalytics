@@ -144,6 +144,10 @@ function get_loop($endpoint, $args, $key_field, $progress = false, $max_retries 
       }
 
       if ($progress) {
+        if (preg_match('/\b404\b/', $ret['errmsg'])) {
+          echo "Got 404 from API, giving up.\n";
+          return null;
+        }
         echo "Unsuccessful API call on attempt " . $retries . ". " . $ret['errmsg'];
       }
 
